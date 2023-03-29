@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 7pt; font-family: arial">
+    <head>
+        <meta name="pdfkit-page-height" content="297mm"/>
+        <meta name="pdfkit-page-width" content="210mm"/>
+        <meta name="pdfkit-margin-top" content="20mm"/>
+        <meta name="pdfkit-margin-bottom" content="7mm"/>
+        <meta name="pdfkit-margin-left" content="5mm"/>
+        <meta name="pdfkit-margin-right" content="5mm"/>
+
+        <meta name="pdfkit-header-line" content=""/>
+        <meta name="pdfkit-header-spacing" content="1"/>
+        <meta name="pdfkit-header-html" content="./pdfResources/header_rendered.html"/>
+
+        <meta name="pdfkit-footer-line" content=""/>
+        <meta name="pdfkit-footer-font-size" content="8"/>
+        <meta name="pdfkit-footer-left" content="Page [page] (This is a system generated document)"/>
+    </head>
+
+<style>
+    @page{
+        margin-top: 20mm; 
+        margin-left: 5mm;
+        margin-right: 5mm;
+        margin-bottom: 7mm;
+
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+
+        @top-left{
+            content: element(headerLeft);
+        }
+        @top-center{
+            content: element(headerCenter);
+        }
+        @bottom-left{
+            content: 'Page ' counter(page) ' / ' counter(pages) ' (This document is System Generated)';
+            font-size: 10pt;
+        }
+    }
+    .headerLeft{
+        position: running(headerLeft);
+        font-size:12pt;
+    }
+
+    .headerCenter{
+        position: running(headerCenter)
+    }
+
+</style>
+        <div class="headerLeft"> 
+            <img src="{{ increffLogo }}" alt="Increff Logo" height="13mm" width="auto" style="position: absolute; top: -20%; left:0%;">
+        </div>
+        <div class="headerCenter"> <h1> TOP SELLER REPORT </h1> </div>
+
+{# Macros #}
+{% macro writeString(str) %}
+        {% if str %}
+            {{ str }}
+        {% else %}
+             NA 
+        {% endif %}
+{% endmacro %}
+
+{# multiple inputs ? #}
+{% macro writeParam(str) %}
+        {% if str %}
+            {{ str }}
+        {% else %}
+            Not Selected
+        {% endif %}
+{% endmacro %}
+
+{% macro writeDecimal(str) %}
+        {% if str %}
+            {{ str|round(2,'floor') }}
+        {% else %}
+            0
+        {% endif %}
+{% endmacro %}
+
+{% macro writeInteger(str) %}
+        {% if str %}
+            {{ str|int }}
+        {% else %}
+            0
+        {% endif %}
+{% endmacro %}
+        
+        <table style="border-collapse: collapse; width: 100%; table-layout: fixed;" border="0">
+            <colgroup>
+                <col style="width: 25%">
+                <col style="width: 25%">
+                <col style="width: 25%">
+            </colgroup>
+            <tbody style="line-height: 12pt; font-size : 8pt">
+                <tr>
+                    <td style="padding-top: 1pt">Start Date : {{ writeParam(params.start_date) }}</td>
+                    <td style="padding-top: 1pt">End Date : {{ writeParam(params.end_date) }}</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Category : {{ writeParam(params.category) }} </td>
+                    <td>SubCategory : {{ writeParam(params.subcategory) }}</td>
+                    <td>Channel Type : {{ writeParam(params.channel) }}</td>
+                    <td>Attribute 1: {{ writeParam(params.attribute1) }}</td>
+                </tr>
+                <tr>
+                    <td>Attribute 2 : {{ writeParam(params.attribute2) }}</td>
+                    <td>Season : {{ writeParam(params.season) }}</td>
+                    <td>Brand : {{ writeParam(params.brand) }} </td>
+                    <td>Gender : {{ writeParam(params.gender) }}</td>
+                </tr>
+                <tr>
+                    <td>Style Tagging : {{ writeParam(params.style_tag) }}</td>
+                    <td>Sort By : {{ writeParam(params.sort_by) }}</td>
+                    <td>Number of Records : {{ writeString(results|length) }}</td>
+                    <td>Minimum Healthy Days Live : {{ writeParam(params.minLiveDays) }}</td>
+                </tr>
+                <tr>
+                    <td>Min STR% : {{ writeParam(params.minStrPercentage) }}%</td>
+                    <td>Max STR% : {{ writeParam(params.maxStrPercentage) }}%</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if (results|length==0) %}
+            <hr>
+            <h2 style="text-align: center;"> No Top Seller Styles </h2>
+        {% endif %}
+        <br>
+
+        <div style="display: table; table-layout: fixed; width: 100%; page-break-inside: avoid;">
+        {% for item in results %}
+            <div style="display: table-cell; width: 33%; padding: 3px">
+                <table style="border-collapse: collapse; width: 100%; table-layout: fixed; page-break-inside: avoid" border="0">
+                    <colgroup>
+                        <col style="width: 50%">
+                        <col style="width: 50%">
+                    </colgroup>
+                    <tbody style="border: solid 1px black;">
+                        <tr>
+                            <td colspan="2" style="font-size: 12px; text-align: center; color: blue; font-weight: bold; padding-top: 2pt">
+                                {{ writeString(item.style) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img style="padding-left: 5pt; 
+                                            padding-right: 5pt;" 
+                                            height="auto" 
+                                            width="25mm" 
+                                            src="{{ item.imageUrl }}" /> 
+
+                            </td>
+                            <td style="padding-bottom: 9pt">
+                                <table style="border-collapse: collapse; width: 100%; table-layout: fixed;" border="0">
+                                    <colgroup>
+                                        <col style="width: 65%">
+                                        <col style="width: 35%">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td style="font-weight: bold">ROS/ STORE/ WEEK</td>
+                                            <td> {{ writeDecimal(item.healthyRos) }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">DOH</td>
+                                            <td> {{ writeDecimal(item.doh) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">MRP</td>
+                                            <td> {{ writeDecimal(item.mrp) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">STR</td>
+                                            <td> {{ writeDecimal(item.str) }} %</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">Qty. Sold</td>
+                                            <td> {{ writeInteger(item.rawSalesQty) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">Revenue</td>
+                                            <td> {{ writeInteger(item.revenue) }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">Healthy Days Live</td>
+                                            <td> {{ writeInteger(item.avgHealthyDaysLive) }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">Days Live</td>
+                                            <td> {{ writeInteger(item.avgRawDaysLive) }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">Closing Stock</td>
+                                            <td> {{ writeInteger(item.closingStock) }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">Avg. Discount</td>
+                                            <td> {{ writeDecimal(item.averageDiscountPercentage) }} %</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold">No of Stores</td>
+                                            <td> {{ writeInteger(item.noOfStores) }} </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% if(loop.index%3==0 and not loop.last) %}
+        </div>
+        <div style="display: table; table-layout: fixed; width: 100%; page-break-inside: avoid;">
+            {% endif %}
+
+            {% if (loop.last and loop.length%3!=0) %}
+                {%for i in range(3-(loop.length%3))%}
+            <div style="display: table-cell; width: 33%; color:white"> 
+                <table style="table-layout: fixed; page-break-inside: avoid" border="0"> 
+                    <tbody> <tr> <td>  </td> </tr> </tbody> 
+                </table>
+            </div>
+                {% endfor %}
+            {% endif %}
+
+        {% endfor %}
+
+        </div>
+
+    </body>
+</html>
